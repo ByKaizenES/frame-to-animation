@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frame to Animation</title>
+    
+    <!-- Meta tags de autoría -->
+    <meta name="author" content="ByKaizenES">
+    <meta name="creator" content="ByKaizenES">
+    <meta name="publisher" content="ByKaizenES">
+    <meta name="description" content="Herramienta para convertir imágenes en video WebM con transparencia - Creado por ByKaizenES">
+    <meta name="keywords" content="frames, video, webm, animación, conversor, ByKaizenES">
+    <meta name="copyright" content="© 2025 ByKaizenES. Todos los derechos reservados.">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Frame to Animation - ByKaizenES">
+    <meta property="og:description" content="Convierte imágenes en video WebM con transparencia">
+    <meta property="og:site_name" content="Frame to Animation by ByKaizenES">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:creator" content="@ByKaizenES">
+    <meta name="twitter:title" content="Frame to Animation - ByKaizenES">
+    <meta name="twitter:description" content="Convierte imágenes en video WebM con transparencia">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <svg class="clapperboard" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Parte inferior de la claqueta (cuerpo) -->
+                    <rect x="10" y="40" width="80" height="50" rx="3" fill="#1a1a1a" stroke="#000" stroke-width="1.5"/>
+                    
+                    <!-- Líneas horizontales en el cuerpo -->
+                    <line x1="10" y1="50" x2="90" y2="50" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="10" y1="60" x2="90" y2="60" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="10" y1="70" x2="90" y2="70" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="10" y1="80" x2="90" y2="80" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+                    
+                    <!-- Texto en el cuerpo -->
+                    <text x="50" y="68" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#fff" text-anchor="middle">ACCIÓN</text>
+                    
+                    <!-- Parte superior de la claqueta (tapa) con franjas -->
+                    <g transform-origin="50 40">
+                        <!-- Franja blanca 1 -->
+                        <rect x="10" y="15" width="16" height="25" fill="#fff" stroke="#000" stroke-width="1.5"/>
+                        <!-- Franja negra 1 -->
+                        <rect x="26" y="15" width="16" height="25" fill="#1a1a1a" stroke="#000" stroke-width="1.5"/>
+                        <!-- Franja blanca 2 -->
+                        <rect x="42" y="15" width="16" height="25" fill="#fff" stroke="#000" stroke-width="1.5"/>
+                        <!-- Franja negra 2 -->
+                        <rect x="58" y="15" width="16" height="25" fill="#1a1a1a" stroke="#000" stroke-width="1.5"/>
+                        <!-- Franja blanca 3 -->
+                        <rect x="74" y="15" width="16" height="25" fill="#fff" stroke="#000" stroke-width="1.5"/>
+                        
+                        <!-- Bisagra izquierda -->
+                        <circle cx="20" cy="40" r="3" fill="#666" stroke="#000" stroke-width="1"/>
+                        <circle cx="20" cy="40" r="1.5" fill="#333"/>
+                        
+                        <!-- Bisagra derecha -->
+                        <circle cx="80" cy="40" r="3" fill="#666" stroke="#000" stroke-width="1"/>
+                        <circle cx="80" cy="40" r="1.5" fill="#333"/>
+                    </g>
+                    
+                    <!-- Sombra inferior -->
+                    <ellipse cx="50" cy="92" rx="35" ry="3" fill="#000" opacity="0.2"/>
+                </svg>
+            </div>
+            <h1>Frame to Animation</h1>
+            <p class="subtitle">Convierte imágenes en video WebM</p>
+        </div>
+
+        <div class="card">
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon">📁</div>
+                <h3>Selecciona tus frames</h3>
+                <p>Arrastra archivos aquí o haz clic para buscar</p>
+                <input type="file" id="fileInput" multiple accept="image/*">
+            </div>
+        </div>
+
+        <div id="framesContainer" style="display: none;">
+            <div class="card">
+                <h2 class="section-title">
+                    Frames 
+                    <span class="frame-count">(<span id="frameCount">0</span> cargados)</span>
+                </h2>
+                <p style="color: #666; font-size: 0.9em; margin: -16px 0 20px 0;">
+                    💡 Arrastra los frames para cambiar el orden de la animación
+                </p>
+                <div class="frames-grid" id="framesPreview"></div>
+                <button class="btn btn-secondary" onclick="clearFrames()">Limpiar todo</button>
+            </div>
+        </div>
+
+        <div id="controls" style="display: none;">
+            <div class="card">
+                <h2 class="section-title">Configuración</h2>
+                
+                <div class="control-group">
+                    <label>Velocidad (FPS)</label>
+                    <div class="slider-container">
+                        <input type="range" id="fpsSlider" min="1" max="30" value="10">
+                        <span class="value-display" id="fpsValue">10</span>
+                    </div>
+                    <p class="hint-text">Menor = más lento • Mayor = más rápido</p>
+                </div>
+
+                <div class="control-group">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="transparentBg" checked>
+                        <label for="transparentBg" class="checkbox-label">Mantener transparencia de PNG</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions" id="actions" style="display: none;">
+            <button class="btn" onclick="generateWebM()">Generar Video</button>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+        <div class="progress" id="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="previewArea" style="display: none;">
+            <div class="card">
+                <h2 class="section-title">Resultado</h2>
+                <div class="preview-container">
+                    <div id="previewContent"></div>
+                </div>
+                <div style="text-align: center; margin-top: 24px;">
+                    <button class="btn" id="downloadBtn" style="display: none;">Descargar Video</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card info-box">
+            <strong>Información</strong>
+            <ul>
+                <li>Los frames se procesan en el orden seleccionado</li>
+                <li>Usa imágenes del mismo tamaño para mejores resultados</li>
+                <li>El formato WebM ofrece buena calidad y compresión</li>
+                <li>La transparencia solo funciona con archivos PNG</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bocadillo de ayuda -->
+    <div class="donate-tooltip">
+        ¿Te ha servido esta herramienta? 💙
+    </div>
+
+    <!-- Botón de donación flotante -->
+    <a href="https://www.paypal.com/donate/?hosted_button_id=8NUQ95GZCPS8A" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="donate-button"
+       title="Apoya este proyecto">
+        <span class="coffee-icon">☕</span>
+        <span>Invítame a un café</span>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <video class="footer-video" autoplay loop muted playsinline>
+            <source src="video_1762995318526.webm" type="video/webm">
+            Tu navegador no soporta el elemento de video.
+        </video>
+        <p class="copyright">
+            Copyright © 2025 - Todos los derechos reservados | 
+            <a href="#" class="brand">ByKaizenES</a>
+        </p>
+        
+        <!-- Redes Sociales -->
+        <div class="social-links">
+            <a href="https://twitter.com/ByKaizenES" target="_blank" rel="noopener noreferrer" class="twitter" title="Síguenos en X (Twitter)">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+            </a>
+            
+            <a href="https://instagram.com/ByKaizenES" target="_blank" rel="noopener noreferrer" class="instagram" title="Síguenos en Instagram">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+            </a>
+            
+            <a href="https://youtube.com/@ByKaizenES" target="_blank" rel="noopener noreferrer" class="youtube" title="Suscríbete en YouTube">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+            </a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
